@@ -20,7 +20,7 @@ import com.app.entity.UserAccount;
 import com.app.repository.UserAccountRepository;
 import com.app.service.UserAccountService;
 
-@CrossOrigin()
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class UserAccountController {
 
@@ -28,99 +28,76 @@ public class UserAccountController {
 	UserAccountService userAccountService;
 	@Autowired
 	UserAccountRepository userAccountRepository;
-	
-	
-	@RequestMapping(value="/create-account",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.GET)
+
+	@RequestMapping(value = "/create-account", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<UserAccount> createAccount () {
-			UserAccount account = new UserAccount();
-			
-			return new ResponseEntity<>(account, HttpStatus.OK);
-	}
-	
-	@RequestMapping(value="/create-account",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.POST)
-	public void handleCreateAccount(@RequestBody UserAccount account) {
-		userAccountRepository.save(account);
-	}
-	
-	@RequestMapping(value="/login",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<UserAccount> loginAccount (@RequestBody UserAccount account) {
-		
-		UserAccount loginAccount = userAccountRepository.login(account.getEmail(), account.getPassword());
-			
-			if(loginAccount == null) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			return new ResponseEntity<>(loginAccount, HttpStatus.OK);
-	}
-	@RequestMapping(value="/account/{userAccountId}",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<UserAccount> getAccount (@PathVariable("userAccountId") Long id ) {
-			
-			
-			return new ResponseEntity<>(userAccountService.getAccount(id), HttpStatus.OK);
-	}
-	
-	
-	@RequestMapping(value="/account/settings/update/{userAccountId}",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<UserAccount> getAccountToUpdate (@PathVariable("userAccountId") Long id ) {
-			
-			
-			return new ResponseEntity<>(userAccountService.getAccount(id), HttpStatus.OK);
+	public ResponseEntity<UserAccount> createAccount() {
+		UserAccount account = new UserAccount();
+
+		return new ResponseEntity<>(account, HttpStatus.OK);
 	}
 
-	@RequestMapping(value="/account/settings/update/",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<UserAccount> updateAccount (@RequestBody UserAccount account) {
-			
-			if(account.getId() == null) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			return new ResponseEntity<>(userAccountService.handleUpdateAccount(account), HttpStatus.OK);
-	}
-	@RequestMapping(value="/account/settings/delete",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.DELETE)
-	@ResponseBody
-	public ResponseEntity<UserAccount> deleteAccount (@RequestBody UserAccount account) {
+	@RequestMapping(value = "/create-account", method = RequestMethod.POST)
+	public UserAccount handleCreateAccount(@RequestBody UserAccount account) {
+		userAccountRepository.save(account);
 		
+		return account;
+	}
+
+	@RequestMapping(value = "/login",
+
+			method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<UserAccount> loginAccount(@RequestBody UserAccount account) {
+		System.out.println(account);
+
+		UserAccount loginAccount = userAccountRepository.login(account.getEmail(), account.getPassword());
+			System.out.println(loginAccount.getFirst_Name());
+//		if (loginAccount == null) {
+//			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//		}
+		return new ResponseEntity<>(loginAccount, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/getUser/{id}", method = RequestMethod.GET)
+	public ResponseEntity<UserAccount> getAccount(@PathVariable("id")Long id) {
+
+		return new ResponseEntity<>(userAccountService.getAccount(id), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/account/settings/update/{userAccountId}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<UserAccount> getAccountToUpdate(@PathVariable("userAccountId") Long id) {
+
+		return new ResponseEntity<>(userAccountService.getAccount(id), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/account/settings/update/", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<UserAccount> updateAccount(@RequestBody UserAccount account) {
+
+		if (account.getId() == null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(userAccountService.handleUpdateAccount(account), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/account/settings/delete", method = RequestMethod.DELETE)
+	@ResponseBody
+	public ResponseEntity<UserAccount> deleteAccount(@RequestBody UserAccount account) {
+
 		userAccountRepository.delete(account);
 		return new ResponseEntity<>(HttpStatus.OK);
-		
-			
+
 	}
-	@RequestMapping(value="/account/settings/deleteworkout",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE,
-			method=RequestMethod.POST)
+
+	@RequestMapping(value = "/account/settings/deleteworkout", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<UserAccount> deleteWorkoutFromAccount (@RequestBody UserAccount account) {
+	public ResponseEntity<UserAccount> deleteWorkoutFromAccount(@RequestBody UserAccount account) {
 		account.setPlan(null);
 		account.setWorkoutStartDate(null);
 		userAccountRepository.save(account);
-		return new ResponseEntity<>(account,HttpStatus.OK);
+		return new ResponseEntity<>(account, HttpStatus.OK);
 	}
-	
-}
 
+}

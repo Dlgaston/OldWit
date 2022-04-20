@@ -44,7 +44,16 @@ public class UserAccountService {
 		}
 		return null;
 	
-	
-
 }
+	public UserAccount getAccountByEmail(String email) {
+		Optional<UserAccount> updateAccount = userAccountRepository.getEMail(email);
+		if (updateAccount.isPresent()) {
+			UserAccount accountFound = updateAccount.get();
+			return userAccountRepository.save(accountFound);
+		}
+		return null;
+	
+}
+
+	
 }

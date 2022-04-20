@@ -1,5 +1,7 @@
 package com.app.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,5 +13,5 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
 	public UserAccount login(String email, String password);
 
 	@Query("SELECT S FROM UserAccount S WHERE S.email = ?1")
-	public UserAccount getEMail(String email);
+	public Optional<UserAccount> getEMail(String email);
 }

@@ -44,7 +44,7 @@ public class WorkoutPlanController {
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			method = RequestMethod.POST)
 	public void createWorkout() {
-		workoutPlanService.FivebyFive();
+		workoutPlanService.FiveThreeOne();
 	}
 	@RequestMapping(value = "/getworkoutplan/{workout_id}",
 			consumes = MediaType.APPLICATION_JSON_VALUE,
